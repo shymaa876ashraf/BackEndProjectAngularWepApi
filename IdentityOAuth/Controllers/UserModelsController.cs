@@ -24,10 +24,7 @@ namespace IdentityOAuth.Controllers
 
         // GET: api/UserModels/5
         [ResponseType(typeof(UserModel))]
-    
-
-       
-
+   
         // POST: api/UserModels
         [HttpPost]
         public async Task<IHttpActionResult> registration(UserModel account)
@@ -48,10 +45,16 @@ namespace IdentityOAuth.Controllers
                 user.UserName = account.Name;
                 user.Email = account.Name;
                 user.PasswordHash = account.Password;
-
+               
+                
                 IdentityResult result = await manager.CreateAsync(user, account.Password);
                 if (result.Succeeded)
                 {
+                    Cart c = new Cart() { UserID = user.Id };
+                    Whichlist w = new Whichlist() { UserID = user.Id };
+                    db.whichlist.Add(w);
+                    db.carts.Add(c);
+                    db.SaveChanges();
                     //string locat = Url.Link("DefaultApi", new { })
                     return Created("", "register Sucess " + user.UserName);
                 }
